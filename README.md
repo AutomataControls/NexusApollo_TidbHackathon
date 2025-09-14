@@ -2,13 +2,12 @@
 
 ![AutomataNexus](https://img.shields.io/badge/AutomataNexus-AI-06b6d4?labelColor=64748b)
 ![Platform](https://img.shields.io/badge/Platform-Raspberry%20Pi%205-c51a4a)
-![TiDB Hackathon](https://img.shields.io/badge/TiDB%20AgentX-Hackathon%202025-FF6B6B?style=for-the-badge)
-![TiDB Vector](https://img.shields.io/badge/TiDB-Vector%20Search-FF6B6B?style=for-the-badge)
+![TiDB Hackathon](https://img.shields.io/badge/TiDB%20AgentX-Hackathon%202025-FF6B6B)
+![TiDB Vector](https://img.shields.io/badge/TiDB-Vector%20Search-FF6B6B)
 ![AI Models](https://img.shields.io/badge/AI%20Models-8%20Specialized-4ECDC4)
 ![NPU](https://img.shields.io/badge/Hailo--8%20NPU-26%20TOPS-45B7D1)
 ![Sensors](https://img.shields.io/badge/Sensors-21%20Types-2ECC71)
 ![Status](https://img.shields.io/badge/Status-Production%20Ready-success)
-
 ![React](https://img.shields.io/badge/React-18.2-61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.3-3178C6)
 ![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933)
