@@ -55,6 +55,10 @@ We've integrated a **Demo Mode** specifically for evaluation:
 
 Nexus Apollo is a revolutionary HVAC diagnostic device that combines **8 specialized AI models** with **TiDB vector search** to provide real-time fault detection, predictive maintenance, and energy optimization. The system runs on a Raspberry Pi 5 with a Hailo-8 NPU chip, connecting directly to individual HVAC equipment through our comprehensive 21-sensor kit via Sequent Microsystems HAT boards.
 
+### 🆕 TiDB Integration - New Addition to Our Stack
+
+**TiDB is a newly integrated database solution for our production system.** During this hackathon, we've added TiDB's vector search capabilities to enhance our fault pattern matching and historical analysis features. This integration brings cloud-scale vector search to our edge devices, enabling semantic similarity searches across thousands of historical fault patterns and sensor embeddings. We're excited to begin field testing this powerful addition to our diagnostic platform.
+
 ### Key Innovation: 6-Step Agentic Workflow with TiDB
 
 Our system implements a sophisticated **6-step agentic workflow** that exceeds hackathon requirements:

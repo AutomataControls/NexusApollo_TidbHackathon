@@ -1,0 +1,229 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.625rem;
+  /* Main Theme Colors */
+  --background: oklch(1 0 0); /* Pure white */
+  --foreground: oklch(0.145 0 0);
+
+  /* Ultra ultra ultra light mint */
+  --card: oklch(0.995 0.008 165); /* Nearly white with mint hint */
+  --card-foreground: oklch(0.145 0 0);
+
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+
+  /* Ultra light teal primary */
+  --primary: oklch(0.65 0.15 190); /* Teal */
+  --primary-foreground: oklch(1 0 0);
+
+  /* Ultra light mint secondary */
+  --secondary: oklch(0.98 0.012 165); /* Ultra light mint */
+  --secondary-foreground: oklch(0.205 0 0);
+
+  /* Ultra light grey muted */
+  --muted: oklch(0.97 0 0); /* Ultra light grey */
+  --muted-foreground: oklch(0.556 0 0);
+
+  /* Ultra light orange accent */
+  --accent: oklch(0.96 0.04 50); /* Ultra light orange */
+  --accent-foreground: oklch(0.205 0 0);
+
+  /* Ultra light red for destructive */
+  --destructive: oklch(0.95 0.05 25); /* Ultra light red */
+  --border: oklch(0.95 0.01 190); /* Ultra light teal border */
+  --input: oklch(0.95 0.01 190);
+  --ring: oklch(0.65 0.15 190);
+
+  /* Chart colors with theme palette */
+  --chart-1: oklch(0.85 0.08 50); /* Light orange */
+  --chart-2: oklch(0.85 0.08 60); /* Light amber */
+  --chart-3: oklch(0.85 0.12 190); /* Light teal */
+  --chart-4: oklch(0.95 0.04 165); /* Light mint */
+  --chart-5: oklch(0.92 0.02 25); /* Light red */
+
+  /* Sidebar with mint tint */
+  --sidebar: oklch(0.995 0.008 165);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.65 0.15 190);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.96 0.04 50);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.95 0.01 190);
+  --sidebar-ring: oklch(0.65 0.15 190);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom Button Components with Deep Shadow Hover Effects */
+@layer components {
+  .btn-primary {
+    @apply relative inline-flex items-center justify-center rounded-lg px-4 py-2.5 
+           bg-primary text-primary-foreground font-medium
+           transition-all duration-300 ease-out transform-gpu
+           hover:-translate-y-1 hover:scale-[1.02]
+           active:translate-y-0 active:scale-100;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 
+                0 10px 10px -5px rgba(0, 0, 0, 0.04),
+                0 30px 60px -15px rgba(14, 165, 171, 0.3);
+  }
+
+  .btn-secondary {
+    @apply relative inline-flex items-center justify-center rounded-lg px-4 py-2.5
+           bg-secondary border border-primary/20 text-primary font-medium
+           transition-all duration-300 ease-out transform-gpu
+           hover:-translate-y-1 hover:bg-primary/5
+           active:translate-y-0 active:scale-100;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+
+  .btn-secondary:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 
+                0 10px 10px -5px rgba(0, 0, 0, 0.04),
+                0 20px 40px -10px rgba(14, 165, 171, 0.2);
+  }
+
+  .btn-accent {
+    @apply relative inline-flex items-center justify-center rounded-lg px-4 py-2.5
+           bg-accent text-accent-foreground font-medium
+           transition-all duration-300 ease-out transform-gpu
+           hover:-translate-y-1 hover:brightness-105
+           active:translate-y-0 active:scale-100;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  .btn-accent:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 
+                0 10px 10px -5px rgba(0, 0, 0, 0.04),
+                0 25px 50px -12px rgba(251, 146, 60, 0.25);
+  }
+
+  .btn-destructive {
+    @apply relative inline-flex items-center justify-center rounded-lg px-4 py-2.5
+           bg-destructive text-red-800 font-medium
+           transition-all duration-300 ease-out transform-gpu
+           hover:-translate-y-1 hover:brightness-95
+           active:translate-y-0 active:scale-100;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  .btn-destructive:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 
+                0 10px 10px -5px rgba(0, 0, 0, 0.04),
+                0 25px 50px -12px rgba(239, 68, 68, 0.25);
+  }
+
+  /* Card styles with subtle backgrounds */
+  .card-mint {
+    @apply bg-card border border-border rounded-lg p-6
+           transition-all duration-300
+           hover:shadow-lg hover:-translate-y-0.5;
+  }
+
+  .card-white {
+    @apply bg-background border border-border rounded-lg p-6
+           transition-all duration-300
+           hover:shadow-lg hover:-translate-y-0.5;
+  }
+
+  /* Status indicators */
+  .status-success {
+    @apply bg-primary/10 text-primary px-3 py-1 rounded-md text-sm font-medium;
+  }
+
+  .status-warning {
+    @apply bg-accent/20 text-orange-700 px-3 py-1 rounded-md text-sm font-medium;
+  }
+
+  .status-error {
+    @apply bg-destructive text-red-700 px-3 py-1 rounded-md text-sm font-medium;
+  }
+}

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAIAD Model - Hailo-8 NPU Profiling Report</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4a5568 0%, #718096 100%);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+            border-bottom: 4px solid #17a2b8;
+        }
+        
+        .company-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            letter-spacing: 3px;
+            color: #17a2b8;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+        
+        .validation-statement {
+            background: rgba(255,255,255,0.15);
+            padding: 15px 30px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .model-badge {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .metric-card.highlight {
+            background: linear-gradient(135deg, #3498db22 0%, #3498db44 100%);
+            border: 2px solid #3498db;
+        }
+        
+        .metric-card .label {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 5px;
+            cursor: help;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .metric-card .value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .metric-card .unit {
+            font-size: 1rem;
+            color: #666;
+            margin-left: 5px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section h2 {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+        }
+        
+        .chart-container {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .performance-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .performance-table th,
+        .performance-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .performance-table th {
+            background: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .performance-table tr:hover {
+            background: #f5f5f5;
+        }
+        
+        .tech-info {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background: #3498db;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 16px;
+            font-size: 12px;
+            margin-left: 5px;
+            cursor: help;
+            position: relative;
+        }
+        
+        .tech-info:hover::after {
+            content: attr(data-info);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2c3e50;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            white-space: nowrap;
+            font-size: 12px;
+            margin-bottom: 5px;
+            z-index: 1000;
+            max-width: 250px;
+            white-space: normal;
+        }
+        
+        .certification-footer {
+            background: #f8f9fa;
+            padding: 30px;
+            margin-top: 40px;
+            border-top: 3px solid #17a2b8;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        
+        .signature-section {
+            text-align: left;
+        }
+        
+        .signature-name {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: -5px;
+        }
+        
+        .signature-line {
+            border-top: 2px solid #333;
+            width: 200px;
+            margin: 5px 0;
+        }
+        
+        .signature-title {
+            font-size: 12px;
+            line-height: 1.4;
+            color: #666;
+        }
+        
+        .official-seal {
+            width: 120px;
+            height: 120px;
+            border: 3px double #17a2b8;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 10px;
+            background: white;
+            font-weight: bold;
+            color: #17a2b8;
+            line-height: 1.2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="company-name">AUTOMATANEXUS LLC</div>
+            <h1>NAIAD Model - NPU Profiling Report</h1>
+            <div class="subtitle">Hailo-8 Neural Processing Unit Performance Analysis</div>
+            <div class="model-badge">Water Systems</div>
+            <div class="validation-statement">
+                This profiling report certifies the genuine performance metrics and computational characteristics 
+                of the NAIAD neural network model, as measured on Hailo-8 NPU hardware. All metrics have been 
+                validated through comprehensive runtime analysis and represent actual inference performance.
+            </div>
+        </div>
+        
+        <div class="content">
+            <!-- Key Performance Metrics -->
+            <div class="metrics-grid">
+                <div class="metric-card highlight">
+                    <div class="label">Throughput <span class="tech-info" data-info="Frames Per Second - How many inference operations the NPU can perform each second">?</span></div>
+                    <div class="value">23,217<span class="unit">FPS</span></div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="label">Inference Time <span class="tech-info" data-info="Time per inference - Lower is better for real-time applications">?</span></div>
+                    <div class="value">0.043<span class="unit">ms</span></div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="label">Input Bandwidth <span class="tech-info" data-info="Data transfer rate from host to NPU">?</span></div>
+                    <div class="value">16.35<span class="unit">Mbit/s</span></div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="label">Output Bandwidth <span class="tech-info" data-info="Data transfer rate from NPU to host">?</span></div>
+                    <div class="value">5.95<span class="unit">Mbit/s</span></div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="label">Frames Processed <span class="tech-info" data-info="Total frames in this profiling session">?</span></div>
+                    <div class="value">116,215<span class="unit">frames</span></div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="label">Relative Efficiency <span class="tech-info" data-info="Performance relative to fastest model (Colossus)">?</span></div>
+                    <div class="value">74.0<span class="unit">%</span></div>
+                </div>
+            </div>
+            
+            <!-- Model Description -->
+            <div class="section">
+                <h2>Model Specialization</h2>
+                <p style="font-size: 1.1rem; line-height: 1.6; color: #555;">
+                    Water Systems Specialist - Flow, pumps & hydronic diagnostics
+                </p>
+            </div>
+            
+            <!-- Performance Charts -->
+            <div class="section">
+                <h2>Performance Visualization</h2>
+                <div class="chart-container">
+                    <div id="performanceChart"></div>
+                </div>
+                <div class="chart-container">
+                    <div id="bandwidthChart"></div>
+                </div>
+            </div>
+            
+            <!-- Performance Analysis -->
+            <div class="section">
+                <h2>Performance Analysis</h2>
+                <table class="performance-table">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Value</th>
+                            <th>Assessment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Inference Latency</td>
+                            <td>0.043 milliseconds</td>
+                            <td>✅ Excellent - Sub-millisecond</td>
+                        </tr>
+                        <tr>
+                            <td>Throughput</td>
+                            <td>23,217 FPS</td>
+                            <td>✅ Good - High throughput</td>
+                        </tr>
+                        <tr>
+                            <td>Bandwidth Efficiency</td>
+                            <td>22.30 Mbit/s total</td>
+                            <td>✅ Optimal - Low bandwidth usage</td>
+                        </tr>
+                        <tr>
+                            <td>NPU Utilization</td>
+                            <td>~37% estimated</td>
+                            <td>⚠️ Room for optimization</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Certification Footer -->
+            <div class="certification-footer">
+                <div class="signature-section">
+                    <div class="signature-name">Andrew G. Jewell Sr.</div>
+                    <div class="signature-line"></div>
+                    <div class="signature-title">
+                        Andrew G. Jewell Sr.<br>
+                        Founder & AI Systems Engineer<br>
+                        AutomataNexus LLC<br>
+                        Report Date: September 06, 2025
+                    </div>
+                </div>
+                
+                <div class="official-seal">
+                    <div>
+                        AUTOMATANEXUS<br>
+                        ★ OFFICIAL ★<br>
+                        NPU PROFILING<br>
+                        CERTIFIED<br>
+                        2025
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Performance comparison chart
+        const performanceData = [{
+            x: ['FPS', 'Efficiency', 'Input BW', 'Output BW'],
+            y: [23217, 74.0, 16.35, 5.95],
+            type: 'bar',
+            marker: {
+                color: ['#3498db', '#3498db88', '#3498db66', '#3498db44'],
+                line: {
+                    color: '#3498db',
+                    width: 2
+                }
+            },
+            text: ['23,217 FPS', '74.0%', '16.35 Mbit/s', '5.95 Mbit/s'],
+            textposition: 'outside',
+            hovertemplate: '%{text}<extra></extra>'
+        }];
+        
+        const performanceLayout = {
+            title: 'NAIAD Model Performance Metrics',
+            showlegend: false,
+            height: 400,
+            xaxis: {
+                title: 'Metrics'
+            },
+            yaxis: {
+                title: 'Value',
+                showticklabels: false
+            },
+            plot_bgcolor: 'rgba(240,240,240,0.3)',
+            paper_bgcolor: 'white'
+        };
+        
+        Plotly.newPlot('performanceChart', performanceData, performanceLayout, {responsive: true});
+        
+        // Bandwidth gauge
+        const bandwidthData = [
+            {
+                type: "indicator",
+                mode: "gauge+number",
+                value: 16.35,
+                title: { text: "Input Bandwidth (Mbit/s)", font: { size: 16 } },
+                gauge: {
+                    axis: { range: [null, 30], tickwidth: 1 },
+                    bar: { color: "#3498db" },
+                    bgcolor: "white",
+                    borderwidth: 2,
+                    bordercolor: "#E0E0E0",
+                    steps: [
+                        { range: [0, 10], color: "rgba(0,0,0,0.1)" },
+                        { range: [10, 20], color: "rgba(0,0,0,0.2)" },
+                        { range: [20, 30], color: "rgba(0,0,0,0.3)" }
+                    ]
+                },
+                domain: { x: [0, 0.45], y: [0, 1] }
+            },
+            {
+                type: "indicator",
+                mode: "gauge+number",
+                value: 5.95,
+                title: { text: "Output Bandwidth (Mbit/s)", font: { size: 16 } },
+                gauge: {
+                    axis: { range: [null, 10], tickwidth: 1 },
+                    bar: { color: "#3498db88" },
+                    bgcolor: "white",
+                    borderwidth: 2,
+                    bordercolor: "#E0E0E0",
+                    steps: [
+                        { range: [0, 3], color: "rgba(0,0,0,0.1)" },
+                        { range: [3, 6], color: "rgba(0,0,0,0.2)" },
+                        { range: [6, 10], color: "rgba(0,0,0,0.3)" }
+                    ]
+                },
+                domain: { x: [0.55, 1], y: [0, 1] }
+            }
+        ];
+        
+        const bandwidthLayout = {
+            height: 250,
+            margin: { t: 20, b: 20, l: 40, r: 40 },
+            paper_bgcolor: "white"
+        };
+        
+        Plotly.newPlot('bandwidthChart', bandwidthData, bandwidthLayout, {responsive: true});
+    </script>
+</body>
+</html>

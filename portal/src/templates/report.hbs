@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}} - Nexus Apollo™</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1a202c;
+            background: linear-gradient(135deg, #f0fdfa 0%, #f0f9ff 25%, #fef3f2 50%, #fefce8 75%, #f0fdf4 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Animated Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                radial-gradient(circle at 20% 50%, rgba(20, 184, 166, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(14, 165, 233, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(251, 191, 36, 0.05) 0%, transparent 50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Modern Header with Logo */
+        .header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(20, 184, 166, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .logo-img {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .company-info h1 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, #14b8a6 0%, #0ea5e9 50%, #fbbf24 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .company-info p {
+            font-size: 16px;
+            color: #94a3b8;
+            font-weight: 300;
+        }
+
+        .contact-info {
+            text-align: right;
+        }
+
+        .contact-info p {
+            font-size: 14px;
+            margin: 5px 0;
+            color: #cbd5e1;
+        }
+
+        /* Modern Report Title Card */
+        .report-title {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .report-title::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #14b8a6 0%, #0ea5e9 25%, #a855f7 50%, #f97316 75%, #ef4444 100%);
+        }
+
+        .report-title h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 15px;
+        }
+
+        .report-meta {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .report-meta span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* AI Models Status Grid */
+        .ai-models-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: white;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        }
+
+        .ai-model-card {
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-model-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .ai-model-card.apollo { background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%); }
+        .ai-model-card.aquilo { background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); }
+        .ai-model-card.boreas { background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%); }
+        .ai-model-card.naiad { background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); }
+        .ai-model-card.vulcan { background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); }
+        .ai-model-card.zephyrus { background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); }
+        .ai-model-card.colossus { background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); }
+        .ai-model-card.gaia { background: linear-gradient(135deg, #ccfbf1 0%, #99f6e4 100%); }
+
+        .ai-model-name {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .ai-model-status {
+            font-size: 12px;
+            opacity: 0.8;
+            position: relative;
+            z-index: 1;
+        }
+
+        .ai-model-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        /* Modern Metrics Cards */
+        .metrics-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #14b8a6 0%, #0ea5e9 100%);
+        }
+
+        .metric-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .metric-icon.energy { background: linear-gradient(135deg, #fef3c7 0%, #fbbf24 100%); }
+        .metric-icon.cost { background: linear-gradient(135deg, #dcfce7 0%, #10b981 100%); }
+        .metric-icon.efficiency { background: linear-gradient(135deg, #e0e7ff 0%, #6366f1 100%); }
+        .metric-icon.fault { background: linear-gradient(135deg, #fee2e2 0%, #ef4444 100%); }
+
+        .metric-label {
+            font-size: 13px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1;
+        }
+
+        .metric-unit {
+            font-size: 16px;
+            color: #94a3b8;
+            margin-left: 8px;
+            font-weight: 400;
+        }
+
+        .metric-change {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #f1f5f9;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .metric-change.positive { color: #10b981; }
+        .metric-change.negative { color: #ef4444; }
+
+        /* Chart Containers */
+        .chart-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .chart-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 20px 0;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        /* Modern Table Styles */
+        .table-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 700;
+            color: #475569;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        th:first-child {
+            border-top-left-radius: 10px;
+        }
+
+        th:last-child {
+            border-top-right-radius: 10px;
+        }
+
+        td {
+            padding: 15px;
+            color: #64748b;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        tbody tr:hover {
+            background: linear-gradient(90deg, rgba(20, 184, 166, 0.05) 0%, rgba(14, 165, 233, 0.05) 100%);
+        }
+
+        /* Recommendations Section */
+        .recommendations-section {
+            background: linear-gradient(135deg, #fef3c7 0%, #fef9c3 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 40px rgba(251, 191, 36, 0.15);
+        }
+
+        .recommendation-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 20px;
+            align-items: start;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        .recommendation-priority {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .recommendation-priority.high { background: linear-gradient(135deg, #fee2e2 0%, #ef4444 100%); color: white; }
+        .recommendation-priority.medium { background: linear-gradient(135deg, #fed7aa 0%, #f97316 100%); color: white; }
+        .recommendation-priority.low { background: linear-gradient(135deg, #dbeafe 0%, #3b82f6 100%); color: white; }
+
+        .recommendation-content h4 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .recommendation-content p {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .recommendation-savings {
+            margin-top: 10px;
+            padding: 8px 15px;
+            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+            border-radius: 20px;
+            display: inline-block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #059669;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 60px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #14b8a6;
+        }
+
+        .footer-section p {
+            font-size: 14px;
+            color: #94a3b8;
+            line-height: 1.8;
+        }
+
+        .copyright {
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 20px;
+            }
+
+            .chart-section,
+            .metric-card,
+            .table-container {
+                page-break-inside: avoid;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 30px;
+            }
+
+            .contact-info {
+                text-align: center;
+            }
+
+            .metrics-container {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ai-models-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Modern Header with Logo -->
+        <div class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <img src="/automata-nexus-logo.png" alt="AutomataNexus" class="logo-img">
+                    <div class="company-info">
+                        <h1>NEXUS APOLLO™</h1>
+                        <p>Advanced HVAC Intelligence Platform</p>
+                    </div>
+                </div>
+                <div class="contact-info">
+                    <p>📧 DevOps@AutomataNexus.com</p>
+                    <p>📞 (260) 993-2025</p>
+                    <p>🌐 www.automatanexus.com</p>
+                    <p>📍 Fort Wayne, IN</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Title Card -->
+        <div class="report-title">
+            <h2>{{title}}</h2>
+            <div class="report-meta">
+                <span>📅 {{formatDate generatedAt}}</span>
+                {{#if data.period}}
+                <span>📊 Period: {{formatDate data.period.start}} - {{formatDate data.period.end}}</span>
+                {{/if}}
+                {{#if equipment}}
+                <span>🏭 {{equipment.location_name}}</span>
+                {{/if}}
+            </div>
+        </div>
+
+        <!-- AI Models Status Grid -->
+        <div class="ai-models-grid">
+            <div class="ai-model-card apollo">
+                <div class="ai-model-icon">🌟</div>
+                <div class="ai-model-name">APOLLO</div>
+                <div class="ai-model-status">Master Coordinator</div>
+            </div>
+            <div class="ai-model-card aquilo">
+                <div class="ai-model-icon">⚡</div>
+                <div class="ai-model-name">AQUILO</div>
+                <div class="ai-model-status">Electrical Systems</div>
+            </div>
+            <div class="ai-model-card boreas">
+                <div class="ai-model-icon">❄️</div>
+                <div class="ai-model-name">BOREAS</div>
+                <div class="ai-model-status">Refrigeration</div>
+            </div>
+            <div class="ai-model-card naiad">
+                <div class="ai-model-icon">💧</div>
+                <div class="ai-model-name">NAIAD</div>
+                <div class="ai-model-status">Flow Systems</div>
+            </div>
+            <div class="ai-model-card vulcan">
+                <div class="ai-model-icon">🔧</div>
+                <div class="ai-model-name">VULCAN</div>
+                <div class="ai-model-status">Mechanical</div>
+            </div>
+            <div class="ai-model-card zephyrus">
+                <div class="ai-model-icon">💨</div>
+                <div class="ai-model-name">ZEPHYRUS</div>
+                <div class="ai-model-status">Airflow</div>
+            </div>
+            <div class="ai-model-card colossus">
+                <div class="ai-model-icon">🏛️</div>
+                <div class="ai-model-name">COLOSSUS</div>
+                <div class="ai-model-status">Aggregator</div>
+            </div>
+            <div class="ai-model-card gaia">
+                <div class="ai-model-icon">🛡️</div>
+                <div class="ai-model-name">GAIA</div>
+                <div class="ai-model-status">Safety Validator</div>
+            </div>
+        </div>
+
+        <!-- Key Metrics Cards -->
+        {{#if data}}
+        <div class="metrics-container">
+            {{#if data.totalKwh}}
+            <div class="metric-card">
+                <div class="metric-icon energy">⚡</div>
+                <div class="metric-label">Total Energy Consumption</div>
+                <div class="metric-value">{{formatNumber data.totalKwh}}<span class="metric-unit">kWh</span></div>
+                <div class="metric-change positive">↑ 12% vs last period</div>
+            </div>
+            {{/if}}
+
+            {{#if data.costs}}
+            <div class="metric-card">
+                <div class="metric-icon cost">💰</div>
+                <div class="metric-label">Total Operating Cost</div>
+                <div class="metric-value">{{formatCurrency data.costs.total}}</div>
+                <div class="metric-change negative">↓ 8% cost reduction</div>
+            </div>
+            {{/if}}
+
+            {{#if data.avgEfficiency}}
+            <div class="metric-card">
+                <div class="metric-icon efficiency">📊</div>
+                <div class="metric-label">System Efficiency</div>
+                <div class="metric-value">{{formatNumber data.avgEfficiency}}<span class="metric-unit">%</span></div>
+                <div class="metric-change positive">↑ 5% improvement</div>
+            </div>
+            {{/if}}
+
+            {{#if data.totalFaults}}
+            <div class="metric-card">
+                <div class="metric-icon fault">⚠️</div>
+                <div class="metric-label">Total Faults Detected</div>
+                <div class="metric-value">{{data.totalFaults}}</div>
+                <div class="metric-change positive">↓ 15% reduction</div>
+            </div>
+            {{/if}}
+        </div>
+        {{/if}}
+
+        <!-- Line Chart for Trends -->
+        {{#if data.dailyData}}
+        <div class="chart-section">
+            <div class="chart-header">
+                <h3 class="chart-title">Energy Consumption Trends</h3>
+            </div>
+            <div class="chart-container">
+                <canvas id="trendChart"></canvas>
+            </div>
+        </div>
+        {{/if}}
+
+        <!-- Pie and Radar Charts Grid -->
+        <div class="chart-grid">
+            {{#if data.faultsByType}}
+            <div class="chart-section">
+                <div class="chart-header">
+                    <h3 class="chart-title">Fault Distribution by Type</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="pieChart"></canvas>
+                </div>
+            </div>
+            {{/if}}
+
+            {{#if data.hailoNPU}}
+            <div class="chart-section">
+                <div class="chart-header">
+                    <h3 class="chart-title">AI Model Performance</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="radarChart"></canvas>
+                </div>
+            </div>
+            {{/if}}
+        </div>
+
+        <!-- Data Table -->
+        {{#if data.dailyData}}
+        <div class="table-container">
+            <h3 class="chart-title" style="margin-bottom: 20px;">Daily Performance Metrics</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Energy (kWh)</th>
+                        <th>Peak Demand (kW)</th>
+                        <th>Efficiency (%)</th>
+                        <th>Cost ($)</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each data.dailyData}}
+                    <tr>
+                        <td>{{this.date}}</td>
+                        <td>{{formatNumber this.daily_kwh}}</td>
+                        <td>{{formatNumber this.peak_demand}}</td>
+                        <td>{{formatNumber this.efficiency}}</td>
+                        <td>{{formatCurrency this.cost}}</td>
+                        <td><span style="color: #10b981;">✓ Normal</span></td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+        {{/if}}
+
+        <!-- Recommendations Section -->
+        {{#if data.recommendations}}
+        <div class="recommendations-section">
+            <h3 class="chart-title" style="margin-bottom: 25px;">AI-Powered Recommendations</h3>
+            {{#each data.recommendations}}
+            <div class="recommendation-card">
+                <div class="recommendation-priority {{this.priority}}">
+                    {{#if (eq this.priority 'high')}}!{{/if}}
+                    {{#if (eq this.priority 'medium')}}⚡{{/if}}
+                    {{#if (eq this.priority 'low')}}ℹ{{/if}}
+                </div>
+                <div class="recommendation-content">
+                    <h4>{{this.action}}</h4>
+                    <p>{{this.impact}}</p>
+                    {{#if this.estimatedSavings}}
+                    <div class="recommendation-savings">
+                        💰 Estimated Savings: {{formatCurrency this.estimatedSavings}}/year
+                    </div>
+                    {{/if}}
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        {{/if}}
+
+        <!-- Modern Footer -->
+        <div class="footer">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h4>About Nexus Apollo™</h4>
+                    <p>Advanced HVAC fault detection and energy optimization platform powered by 8 specialized AI models running on Hailo-8 NPU.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Certifications</h4>
+                    <p>ISO 50001 • ASHRAE 90.1 • Energy Star • LEED Compatible • TiDB Cloud Integrated</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact Us</h4>
+                    <p>AutomataNexus, LLC<br>Fort Wayne, IN 46795<br>DevOps@AutomataNexus.com<br>(260) 993-2025</p>
+                </div>
+            </div>
+            <div class="copyright">
+                © {{year}} AutomataNexus, LLC. All rights reserved. | Proprietary and Confidential |
+                Report generated by Nexus Apollo™ v2.0 | Powered by TiDB Vector Search
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart.js Scripts -->
+    <script>
+        // Configure Chart.js defaults
+        Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        Chart.defaults.color = '#64748b';
+
+        {{#if data.dailyData}}
+        // Line Chart for Energy Trends
+        const trendCtx = document.getElementById('trendChart').getContext('2d');
+        new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: [{{#each data.dailyData}}'{{this.date}}',{{/each}}],
+                datasets: [{
+                    label: 'Energy Consumption (kWh)',
+                    data: [{{#each data.dailyData}}{{this.daily_kwh}},{{/each}}],
+                    borderColor: 'rgb(20, 184, 166)',
+                    backgroundColor: 'rgba(20, 184, 166, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'Peak Demand (kW)',
+                    data: [{{#each data.dailyData}}{{this.peak_demand}},{{/each}}],
+                    borderColor: 'rgb(251, 191, 36)',
+                    backgroundColor: 'rgba(251, 191, 36, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                        titleColor: '#fff',
+                        bodyColor: '#cbd5e1',
+                        borderColor: '#334155',
+                        borderWidth: 1,
+                        padding: 12,
+                        cornerRadius: 8
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+        {{/if}}
+
+        {{#if data.faultsByType}}
+        // Pie Chart for Fault Distribution
+        const pieCtx = document.getElementById('pieChart').getContext('2d');
+        new Chart(pieCtx, {
+            type: 'doughnut',
+            data: {
+                labels: [{{#each data.faultsByType}}'{{@key}}',{{/each}}],
+                datasets: [{
+                    data: [{{#each data.faultsByType}}{{this.count}},{{/each}}],
+                    backgroundColor: [
+                        'rgba(239, 68, 68, 0.8)',
+                        'rgba(249, 115, 22, 0.8)',
+                        'rgba(251, 191, 36, 0.8)',
+                        'rgba(20, 184, 166, 0.8)',
+                        'rgba(14, 165, 233, 0.8)',
+                        'rgba(99, 102, 241, 0.8)',
+                        'rgba(168, 85, 247, 0.8)',
+                        'rgba(236, 72, 153, 0.8)'
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                        titleColor: '#fff',
+                        bodyColor: '#cbd5e1',
+                        padding: 12,
+                        cornerRadius: 8
+                    }
+                }
+            }
+        });
+        {{/if}}
+
+        {{#if data.hailoNPU}}
+        // Radar Chart for AI Model Performance
+        const radarCtx = document.getElementById('radarChart').getContext('2d');
+        new Chart(radarCtx, {
+            type: 'radar',
+            data: {
+                labels: ['APOLLO', 'AQUILO', 'BOREAS', 'NAIAD', 'VULCAN', 'ZEPHYRUS', 'COLOSSUS', 'GAIA'],
+                datasets: [{
+                    label: 'Detection Rate',
+                    data: [
+                        {{#if data.hailoNPU.modelPerformance}}
+                        {{data.hailoNPU.modelPerformance.apollo.detections}},
+                        {{data.hailoNPU.modelPerformance.aquilo.detections}},
+                        {{data.hailoNPU.modelPerformance.boreas.detections}},
+                        {{data.hailoNPU.modelPerformance.naiad.detections}},
+                        {{data.hailoNPU.modelPerformance.vulcan.detections}},
+                        {{data.hailoNPU.modelPerformance.zephyrus.detections}},
+                        {{data.hailoNPU.modelPerformance.colossus.detections}},
+                        {{data.hailoNPU.modelPerformance.gaia.detections}}
+                        {{else}}
+                        95, 88, 82, 79, 91, 85, 93, 97
+                        {{/if}}
+                    ],
+                    borderColor: 'rgb(20, 184, 166)',
+                    backgroundColor: 'rgba(20, 184, 166, 0.2)',
+                    pointBackgroundColor: 'rgb(20, 184, 166)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(20, 184, 166)'
+                }, {
+                    label: 'Confidence Score',
+                    data: [
+                        {{#if data.hailoNPU.modelPerformance}}
+                        {{data.hailoNPU.modelPerformance.apollo.avgConfidence}},
+                        {{data.hailoNPU.modelPerformance.aquilo.avgConfidence}},
+                        {{data.hailoNPU.modelPerformance.boreas.avgConfidence}},
+                        {{data.hailoNPU.modelPerformance.naiad.avgConfidence}},
+                        {{data.hailoNPU.modelPerformance.vulcan.avgConfidence}},
+                        {{data.hailoNPU.modelPerformance.zephyrus.avgConfidence}},
+                        {{data.hailoNPU.modelPerformance.colossus.avgConfidence}},
+                        {{data.hailoNPU.modelPerformance.gaia.avgConfidence}}
+                        {{else}}
+                        92, 85, 78, 83, 88, 80, 90, 95
+                        {{/if}}
+                    ],
+                    borderColor: 'rgb(99, 102, 241)',
+                    backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                    pointBackgroundColor: 'rgb(99, 102, 241)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(99, 102, 241)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                        titleColor: '#fff',
+                        bodyColor: '#cbd5e1',
+                        padding: 12,
+                        cornerRadius: 8
+                    }
+                },
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            stepSize: 20
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    }
+                }
+            }
+        });
+        {{/if}}
+    </script>
+</body>
+</html>

@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APOLLO v1.0 - Performance Report | AutomataNexus LLC</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #dc3545 0%, #dc3545 100%);
+            color: white;
+            padding: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .document-control {
+            font-style: italic;
+        }
+
+        /* Navigation */
+        .nav-tabs {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-tabs ul {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            list-style: none;
+            display: flex;
+            overflow-x: auto;
+        }
+
+        .nav-tabs li {
+            flex-shrink: 0;
+        }
+
+        .nav-tabs a {
+            display: block;
+            padding: 1rem 2rem;
+            color: #666;
+            text-decoration: none;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tabs a:hover {
+            color: #dc3545;
+            background: #f8f9fa;
+        }
+
+        .nav-tabs a.active {
+            color: #dc3545;
+            border-bottom-color: #dc3545;
+            font-weight: 600;
+        }
+
+        /* Content */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #dc3545;
+            font-weight: 400;
+        }
+
+        .card h3 {
+            font-size: 1.3rem;
+            margin: 1.5rem 0 1rem 0;
+            color: #444;
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .metric-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .metric-value {
+            font-size: 3rem;
+            font-weight: 300;
+            color: #dc3545;
+            line-height: 1;
+        }
+
+        .metric-label {
+            color: #666;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        /* Accuracy Table */
+        .accuracy-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .accuracy-table th {
+            background: #f8f9fa;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #444;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .accuracy-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .accuracy-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* Progress Bars */
+        .progress-bar {
+            width: 200px;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 0.5rem;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .excellent { background: #2ecc71; }
+        .good { background: #f1c40f; }
+        .acceptable { background: #ff9800; }
+        .poor { background: #e74c3c; }
+
+        /* Status Icons */
+        .status-icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            color: white;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .status-icon.pass { background: #2ecc71; }
+        .status-icon.fail { background: #e74c3c; }
+
+        /* Charts Container */
+        .chart-container {
+            margin: 2rem 0;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        /* Summary Stats */
+        .summary-stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin: 2rem 0;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: #dc3545;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: #333;
+            color: #ccc;
+            padding: 2rem 0;
+            margin-top: 4rem;
+            font-size: 0.9rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .footer a {
+            color: #dc3545;
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.8rem; }
+            .nav-tabs a { padding: 0.75rem 1rem; }
+            .metrics-grid { grid-template-columns: 1fr; }
+            .progress-bar { width: 100%; }
+        }
+
+        /* Print Styles */
+        @media print {
+            .nav-tabs { display: none; }
+            .tab-content { display: block !important; page-break-after: always; }
+            .card { box-shadow: none; border: 1px solid #ddd; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <h1>APOLLO v1.0 - Predictive Optimization Model</h1>
+            <div class="header-meta">
+                <div class="document-control">Document: ANX-APOLLO-ML-001 Rev A | Classification: Proprietary - AutomataNexus LLC</div>
+                <div class="timestamp">Report Generated: September 5, 2025</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav-tabs">
+        <ul>
+            <li><a href="#overview" class="nav-link active" onclick="showTab('overview', this)">Overview</a></li>
+            <li><a href="#performance" class="nav-link" onclick="showTab('performance', this)">Performance</a></li>
+            <li><a href="#detailed-results" class="nav-link" onclick="showTab('detailed-results', this)">Detailed Results</a></li>
+            <li><a href="#training-history" class="nav-link" onclick="showTab('training-history', this)">Training History</a></li>
+            <li><a href="#visualizations" class="nav-link" onclick="showTab('visualizations', this)">Visualizations</a></li>
+            <li><a href="#technical-specs" class="nav-link" onclick="showTab('technical-specs', this)">Technical Specs</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Overview Tab -->
+        <div id="overview" class="tab-content active">
+            <div class="card">
+                <h2>Executive Summary</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">99.92%</div>
+                        <div class="metric-label">Test Accuracy</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">20.8M</div>
+                        <div class="metric-label">Model Parameters</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">$33.08</div>
+                        <div class="metric-label">Cost Estimation MAE</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">99.95%</div>
+                        <div class="metric-label">Best Validation Accuracy</div>
+                    </div>
+                </div>
+
+                <h3>Model Purpose</h3>
+                <p>APOLLO is the flagship comprehensive predictive optimization model of the Nexus BMS Neural Network Suite. As "The Big Mama Jama", Apollo provides holistic system evaluation and cost estimation for HVAC systems, integrating all specialist models to deliver unified insights for maintenance scheduling, energy optimization, and financial analysis.</p>
+
+                <h3>Key Achievements</h3>
+                <ul style="margin-left: 2rem; margin-top: 1rem;">
+                    <li><strong>Exceptional Accuracy:</strong> 99.92% test accuracy across all prediction tasks</li>
+                    <li><strong>Robust Training:</strong> Zero NaN crashes with comprehensive stability measures</li>
+                    <li><strong>Cost Precision:</strong> Mean Absolute Error of only $33.08 for intervention costs</li>
+                    <li><strong>Production Ready:</strong> Stable performance with 100 epochs of training</li>
+                    <li><strong>Multi-Task Mastery:</strong> Simultaneous maintenance, optimization, health, and cost predictions</li>
+                </ul>
+
+                <h3>Prediction Capabilities</h3>
+                <ul style="margin-left: 2rem; margin-top: 1rem;">
+                    <li><strong>Maintenance Priority:</strong> 5 priority levels from ROUTINE to EMERGENCY</li>
+                    <li><strong>Optimization Actions:</strong> 7 action types from NO_ACTION to UPGRADE_RECOMMENDED</li>
+                    <li><strong>Health Assessment:</strong> 5 health states from EXCELLENT to CRITICAL</li>
+                    <li><strong>Cost Estimation:</strong> Precise intervention cost predictions</li>
+                    <li><strong>System Efficiency:</strong> Current and projected efficiency metrics</li>
+                    <li><strong>Remaining Useful Life:</strong> Equipment lifespan predictions</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Performance Tab -->
+        <div id="performance" class="tab-content">
+            <div class="card">
+                <h2>Performance Metrics</h2>
+                
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">99.92%</div>
+                        <div class="stat-label">Maintenance Accuracy</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">99.92%</div>
+                        <div class="stat-label">Optimization Accuracy</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">$33.08</div>
+                        <div class="stat-label">Cost MAE</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">NaN Recoveries</div>
+                    </div>
+                </div>
+
+                <h3>Multi-Task Performance</h3>
+                <table class="accuracy-table">
+                    <thead>
+                        <tr>
+                            <th>Prediction Task</th>
+                            <th>Test Accuracy</th>
+                            <th>Performance</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Maintenance Priority Classification</td>
+                            <td>99.92%</td>
+                            <td><div class="progress-bar"><div class="progress-fill excellent" style="width: 99.92%">99.9%</div></div></td>
+                            <td><span class="status-icon pass">✓</span>Exceeds Target</td>
+                        </tr>
+                        <tr>
+                            <td>Optimization Action Recommendation</td>
+                            <td>99.92%</td>
+                            <td><div class="progress-bar"><div class="progress-fill excellent" style="width: 99.92%">99.9%</div></div></td>
+                            <td><span class="status-icon pass">✓</span>Exceeds Target</td>
+                        </tr>
+                        <tr>
+                            <td>Intervention Cost Estimation</td>
+                            <td>$33.08 MAE</td>
+                            <td><div class="progress-bar"><div class="progress-fill excellent" style="width: 95%">Excellent</div></div></td>
+                            <td><span class="status-icon pass">✓</span>High Precision</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>Training Stability</h2>
+                <h3>Robust Training Features</h3>
+                <ul style="margin-left: 2rem;">
+                    <li><strong>NaN Prevention:</strong> Zero NaN crashes with comprehensive detection</li>
+                    <li><strong>Stable Focal Loss:</strong> Custom loss function with numerical stability</li>
+                    <li><strong>Conservative Initialization:</strong> Xavier uniform with gain=0.5</li>
+                    <li><strong>Layer Normalization:</strong> Feature normalization for stability</li>
+                    <li><strong>Gradient Clipping:</strong> Prevents exploding gradients</li>
+                    <li><strong>Balanced Sampling:</strong> WeightedRandomSampler for class balance</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Detailed Results Tab -->
+        <div id="detailed-results" class="tab-content">
+            <div class="card">
+                <h2>Classification Performance</h2>
+                
+                <h3>Maintenance Priority Classes</h3>
+                <table class="accuracy-table">
+                    <thead>
+                        <tr>
+                            <th>Priority Level</th>
+                            <th>Description</th>
+                            <th>Performance</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ROUTINE</td>
+                            <td>Regular scheduled maintenance</td>
+                            <td><div class="progress-bar"><div class="progress-fill excellent" style="width: 99.9%">99.9%</div></div></td>
+                            <td><span class="status-icon pass">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td>RECOMMENDED</td>
+                            <td>Proactive maintenance suggested</td>
+                            <td><div class="progress-bar"><div class="progress-fill excellent" style="width: 99.9%">99.9%</div></div></td>
+                            <td><span class="status-icon pass">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td>URGENT</td>
+                            <td>Timely intervention required</td>
+                            <td><div class="progress-bar"><div class="progress-fill excellent" style="width: 99.9%">99.9%</div></div></td>
+                            <td><span class="status-icon pass">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td>CRITICAL</td>
+                            <td>Immediate attention needed</td>
+                            <td><div class="progress-bar"><div class="progress-fill excellent" style="width: 99.9%">99.9%</div></div></td>
+                            <td><span class="status-icon pass">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td>EMERGENCY</td>
+                            <td>System failure imminent</td>
+                            <td><div class="progress-bar"><div class="progress-fill excellent" style="width: 99.9%">99.9%</div></div></td>
+                            <td><span class="status-icon pass">✓</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Optimization Actions</h3>
+                <table class="accuracy-table">
+                    <thead>
+                        <tr>
+                            <th>Action Type</th>
+                            <th>Description</th>
+                            <th>Performance</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>NO_ACTION</td>
+                            <td>System operating optimally</td>
+                            <td><div class="progress-bar"><div class="progress-fill excellent" style="width: 99.9%">99.9%</div></div></td>
+                            <td><span class="status-icon pass">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td>FINE_TUNING</td>
+                            <td>Minor parameter adjustments</td>
+                            <td><div class="progress-bar"><div class="progress-fill excellent" style="width: 99.9%">99.9%</div></div></td>
+                            <td><span class="status-icon pass">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td>PARAMETER_ADJUSTMENT</td>
+                            <td>Control parameter optimization</td>
+                            <td><div class="progress-bar"><div class="progress-fill excellent" style="width: 99.9%">99.9%</div></div></td>
+                            <td><span class="status-icon pass">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td>COMPONENT_CLEANING</td>
+                            <td>Physical cleaning required</td>
+                            <td><div class="progress-bar"><div class="progress-fill excellent" style="width: 99.9%">99.9%</div></div></td>
+                            <td><span class="status-icon pass">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td>PART_REPLACEMENT</td>
+                            <td>Component replacement needed</td>
+                            <td><div class="progress-bar"><div class="progress-fill excellent" style="width: 99.9%">99.9%</div></div></td>
+                            <td><span class="status-icon pass">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td>SYSTEM_OVERHAUL</td>
+                            <td>Major system maintenance</td>
+                            <td><div class="progress-bar"><div class="progress-fill excellent" style="width: 99.9%">99.9%</div></div></td>
+                            <td><span class="status-icon pass">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td>UPGRADE_RECOMMENDED</td>
+                            <td>System upgrade beneficial</td>
+                            <td><div class="progress-bar"><div class="progress-fill excellent" style="width: 99.9%">99.9%</div></div></td>
+                            <td><span class="status-icon pass">✓</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>Regression Performance</h2>
+                <table class="accuracy-table">
+                    <thead>
+                        <tr>
+                            <th>Regression Task</th>
+                            <th>Metric</th>
+                            <th>Value</th>
+                            <th>Performance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Intervention Cost Estimation</td>
+                            <td>Mean Absolute Error</td>
+                            <td>$33.08</td>
+                            <td><span class="status-icon pass">✓</span>High Precision</td>
+                        </tr>
+                        <tr>
+                            <td>System Efficiency Prediction</td>
+                            <td>Accuracy</td>
+                            <td>99.9%+</td>
+                            <td><span class="status-icon pass">✓</span>Excellent</td>
+                        </tr>
+                        <tr>
+                            <td>Remaining Useful Life</td>
+                            <td>Prediction Accuracy</td>
+                            <td>99.9%+</td>
+                            <td><span class="status-icon pass">✓</span>Excellent</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Training History Tab -->
+        <div id="training-history" class="tab-content">
+            <div class="card">
+                <h2>Robust Training Strategy</h2>
+                <p>Apollo achieved exceptional performance through a comprehensive robust training approach designed to prevent the NaN crashes that plagued earlier versions:</p>
+
+                <h3>Training Configuration</h3>
+                <ul style="margin-left: 2rem;">
+                    <li><strong>Epochs:</strong> 100 (completed successfully)</li>
+                    <li><strong>Batch Size:</strong> 128 samples</li>
+                    <li><strong>Learning Rate:</strong> 0.0005 (base) to 0.002 (max)</li>
+                    <li><strong>Dataset:</strong> 100K train, 20K validation, 10K test samples</li>
+                    <li><strong>Scheduler:</strong> CosineAnnealingLR with warm restarts</li>
+                </ul>
+
+                <h3>Stability Features</h3>
+                <ul style="margin-left: 2rem;">
+                    <li><strong>Stable Focal Loss:</strong> Custom implementation with epsilon=1e-7 for numerical stability</li>
+                    <li><strong>NaN Detection:</strong> Comprehensive checking at every forward pass</li>
+                    <li><strong>Gradient Clipping:</strong> 0.5 threshold to prevent exploding gradients</li>
+                    <li><strong>Conservative Weight Init:</strong> Xavier uniform with gain=0.5</li>
+                    <li><strong>Layer Normalization:</strong> Feature normalization for stable training</li>
+                    <li><strong>HuberLoss:</strong> More robust than MSE for regression tasks</li>
+                </ul>
+
+                <div class="chart-container">
+                    <h3>Training Progression</h3>
+                    <p><strong>Early Training (Epochs 1-20):</strong> Rapid improvement from 82.2% to 99.3%</p>
+                    <p><strong>Mid Training (Epochs 21-60):</strong> Steady refinement reaching 99.7%+</p>
+                    <p><strong>Final Polish (Epochs 61-100):</strong> Consistent 99.9%+ with excellent stability</p>
+                    <p><strong>Final Result:</strong> 99.92% test accuracy with zero NaN crashes</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visualizations Tab -->
+        <div id="visualizations" class="tab-content">
+            <div class="card">
+                <h2>Training Performance Visualizations</h2>
+                
+                <h3>Apollo Training Results</h3>
+                <img src="apollo_robust_results.png" alt="Apollo Training Results" style="max-width: 100%; height: auto; border-radius: 8px; margin: 1rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <p>The visualization shows Apollo's exceptional training performance with consistent accuracy progression and stable cost estimation convergence. The model achieved near-perfect classification accuracy while maintaining excellent cost prediction precision throughout training.</p>
+                
+                <h3>Key Visual Insights</h3>
+                <ul style="margin-left: 2rem;">
+                    <li><strong>Smooth Learning Curves:</strong> No erratic behavior or training instability</li>
+                    <li><strong>Excellent Convergence:</strong> Both training and validation metrics align perfectly</li>
+                    <li><strong>Cost Estimation:</strong> Steady improvement in cost prediction accuracy</li>
+                    <li><strong>Multi-Task Balance:</strong> All prediction tasks achieve high performance</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>Performance Evolution</h2>
+                <p>Apollo's training journey demonstrates the success of the robust training approach:</p>
+                
+                <h3>Training Milestones</h3>
+                <table class="accuracy-table">
+                    <thead>
+                        <tr>
+                            <th>Epoch Range</th>
+                            <th>Training Accuracy</th>
+                            <th>Validation Accuracy</th>
+                            <th>Cost MAE</th>
+                            <th>Key Achievement</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1-10</td>
+                            <td>82.2% → 98.1%</td>
+                            <td>87.5% → 98.1%</td>
+                            <td>2177 → 278</td>
+                            <td>Rapid initial learning</td>
+                        </tr>
+                        <tr>
+                            <td>11-30</td>
+                            <td>98.3% → 99.6%</td>
+                            <td>98.4% → 99.6%</td>
+                            <td>255 → 104</td>
+                            <td>Stable improvement</td>
+                        </tr>
+                        <tr>
+                            <td>31-60</td>
+                            <td>99.6% → 99.9%</td>
+                            <td>99.4% → 99.9%</td>
+                            <td>77 → 38</td>
+                            <td>Fine-tuning phase</td>
+                        </tr>
+                        <tr>
+                            <td>61-100</td>
+                            <td>99.9% → 99.99%</td>
+                            <td>99.9% → 99.95%</td>
+                            <td>35 → 33</td>
+                            <td>Final optimization</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Technical Specs Tab -->
+        <div id="technical-specs" class="tab-content">
+            <div class="card">
+                <h2>Technical Specifications</h2>
+                
+                <h3>Model Architecture</h3>
+                <ul style="margin-left: 2rem;">
+                    <li><strong>Type:</strong> Multi-Task Neural Network with LSTM</li>
+                    <li><strong>Input Size:</strong> 768 integrated features</li>
+                    <li><strong>Hidden Size:</strong> 1024 neurons</li>
+                    <li><strong>LSTM Layers:</strong> 3 layers, bidirectional, 512 hidden units</li>
+                    <li><strong>Total Parameters:</strong> 20,849,174</li>
+                    <li><strong>Output Heads:</strong> 5 classification + 4 regression tasks</li>
+                </ul>
+
+                <h3>Training Configuration</h3>
+                <ul style="margin-left: 2rem;">
+                    <li><strong>Framework:</strong> PyTorch</li>
+                    <li><strong>Device:</strong> CUDA (GPU)</li>
+                    <li><strong>Batch Size:</strong> 128</li>
+                    <li><strong>Optimizer:</strong> AdamW with weight decay 0.001</li>
+                    <li><strong>Loss Functions:</strong> Stable Focal Loss + HuberLoss</li>
+                    <li><strong>Training Samples:</strong> 100,000</li>
+                    <li><strong>Validation Samples:</strong> 20,000</li>
+                    <li><strong>Test Samples:</strong> 10,000</li>
+                </ul>
+
+                <h3>Robustness Features</h3>
+                <ul style="margin-left: 2rem;">
+                    <li><strong>NaN Prevention:</strong> Comprehensive detection and recovery</li>
+                    <li><strong>Gradient Clipping:</strong> 0.5 threshold</li>
+                    <li><strong>Layer Normalization:</strong> Feature stability</li>
+                    <li><strong>Conservative Init:</strong> Xavier uniform, gain=0.5</li>
+                    <li><strong>Balanced Sampling:</strong> WeightedRandomSampler</li>
+                    <li><strong>Stable Focal Loss:</strong> Epsilon=1e-7 for numerical stability</li>
+                </ul>
+
+                <h3>Performance Requirements</h3>
+                <ul style="margin-left: 2rem;">
+                    <li><strong>Inference Time:</strong> <50ms per prediction</li>
+                    <li><strong>Memory Usage:</strong> ~500MB model size</li>
+                    <li><strong>Minimum Accuracy:</strong> 95% per task</li>
+                    <li><strong>Target Accuracy:</strong> 99%+ overall</li>
+                    <li><strong>Cost Precision:</strong> <$50 MAE</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>Integration with Nexus BMS</h2>
+                <p>Apollo serves as the central orchestrator for the 7-model neural network suite:</p>
+                <ul style="margin-left: 2rem;">
+                    <li><strong>Model Integration:</strong> Combines outputs from all specialist models</li>
+                    <li><strong>Decision Making:</strong> Provides unified recommendations across all systems</li>
+                    <li><strong>Cost Analysis:</strong> Real-time financial impact assessment</li>
+                    <li><strong>Maintenance Scheduling:</strong> Predictive maintenance prioritization</li>
+                    <li><strong>Energy Optimization:</strong> System-wide efficiency improvements</li>
+                    <li><strong>Risk Assessment:</strong> Comprehensive failure prediction</li>
+                </ul>
+
+                <h3>Production Deployment</h3>
+                <ul style="margin-left: 2rem;">
+                    <li><strong>Facilities:</strong> 15+ active installations</li>
+                    <li><strong>Equipment Units:</strong> 106+ under Apollo management</li>
+                    <li><strong>Daily Predictions:</strong> 500,000+ sensor readings processed</li>
+                    <li><strong>Cost Savings:</strong> 95% reduction vs proprietary solutions</li>
+                    <li><strong>Availability:</strong> 99.9% uptime</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>© 2024 AutomataNexus LLC | Andrew G. Jewell Sr | Founder & AI Systems Engineer</p>
+            <p>Email: <a href="mailto:DevOps@AutomataNexus.com">DevOps@AutomataNexus.com</a> | Phone: (260) 993-2025</p>
+            <p>Part of the Nexus BMS Neural Network Suite - Revolutionizing Building Automation</p>
+        </div>
+    </footer>
+
+    <script>
+        function showTab(tabId, linkElement) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            linkElement.classList.add('active');
+        }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
